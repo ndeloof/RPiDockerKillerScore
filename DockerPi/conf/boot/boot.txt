@@ -1,0 +1,7 @@
+arm_freq=1000
+core_freq=500
+sdram_freq=400
+over_voltage=0
+over_voltage_sdram_p=0
+over_voltage_sdram_i=0
+over_voltage_sdram_c=0
