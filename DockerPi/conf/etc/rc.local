@@ -1,0 +1,17 @@
+#!/bin/sh -e
+if [ ! -e /root/firstboot_done ]; then
+	touch /root/firstboot_done
+	if [ -e /root/firstboot.sh ]; then
+		/root/firstboot.sh
+	fi
+fi
+
+ZRAM_SIZE=865
+
+/sbin/modprobe zram
+/bin/echo $((${ZRAM_SIZE}*1024*1024)) > /sys/block/zram0/disksize
+/sbin/mkswap /dev/zram0
+/sbin/swapon -p 10 /dev/zram0
+
+exit 0
+
