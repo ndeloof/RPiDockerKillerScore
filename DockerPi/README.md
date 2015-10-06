@@ -14,7 +14,8 @@ On a RPi 2, 37 containers start successfully, then:
 
 ## run without Docker
 
-What if we just run N http processes without docker overhead? The idea here is to estimate the max number of web servers a RPi can host, and compare with results we have running them inside docker, so we better understand the actual docker overhead.
+What if we just run N http processes without docker overhead? The idea here is to estimate the max number of web servers a RPi can host, and compare with results we have running them inside docker, so we better understand the actual docker overhead. 
+We can run 2300 of them.
 
 ## tmpfs
 
