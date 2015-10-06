@@ -8,6 +8,14 @@ Error response from daemon: Cannot start container 93eaa630a1dedd67501d4fc76d8cd
 iptables failed: iptables --wait -t nat -A DOCKER -p tcp -d 0/0 --dport 10053 -j DNAT --to-destination 172.17.0.52:80 ! -i docker0:  
 (fork/exec /sbin/iptables: cannot allocate memory)
 ```
+
+or 
+```
+Error response from daemon: Cannot start container 4ac0856d4a3353508faacf8d76a6108dcaacb5aa0f6b1da225f7cebc6da6ec1e: 
+failed sandbox add: failed to create new sandbox: 
+namespace creation reexec command failed: fork/exec /proc/self/exe: cannot allocate memory
+```
+
 On a RPi 2, 37 containers start successfully, then:
 ```
 ```
