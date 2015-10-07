@@ -6,12 +6,19 @@ if [ ! -e /root/firstboot_done ]; then
 	fi
 fi
 
-ZRAM_SIZE=865
-
 /sbin/modprobe zram
-/bin/echo $((${ZRAM_SIZE}*1024*1024)) > /sys/block/zram0/disksize
+
+ZRAM_SWAP_SIZE=200
+/bin/echo $((${ZRAM_SWAP_SIZE}*1024*1024)) > /sys/block/zram0/disksize
 /sbin/mkswap /dev/zram0
 /sbin/swapon -p 10 /dev/zram0
+
+ZRAM_DOCKER_SIZE=100
+/bin/echo $((${ZRAM_DOCKER_SIZE}*1024*1024)) > /sys/block/zram1/disksize
+/sbin/mkfs.ext4 /dev/zram1
+mount /var/lib/docker
+
+systemctl start docker
 
 exit 0
 
