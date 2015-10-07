@@ -1,47 +1,31 @@
-# Our experiments on [RpiDocker](http://blog.docker.com/2015/09/update-raspberry-pi-dockercon-challenge/)
+We use a RPi 1 because ... we have many of them :P and they fail earlier so it takes less time to experiment options.
 
-First run on a using base hypriot system took 2 minutes to run
+1. Starting with a plain hypriot OS image (hypriot-rpi-20150928-174643.img)
+ 
+ We use [this script](start-webservers.sh) to run webservers containers
+ * Container run with `--net=host` as a dedicated IP stack per process is highly resource consuming, and the httpd process do accept port to bind to as argument
+ * Container run with `--log-driver=none` as such a driver do consume resources, and we need to be thrifty
 
-On a RPi 1A (the _very_ old one), 53 containers start successfully, then:
+We can only run *70* containers before docker crash. 
+System state with 69 running containers :
 ```
-Error response from daemon: Cannot start container 93eaa630a1dedd67501d4fc76d8cd6d0b76f08384791ac8670d94450b11ee19f: 
-iptables failed: iptables --wait -t nat -A DOCKER -p tcp -d 0/0 --dport 10053 -j DNAT --to-destination 172.17.0.52:80 ! -i docker0:  
-(fork/exec /sbin/iptables: cannot allocate memory)
-```
-
-or 
-```
-Error response from daemon: Cannot start container 4ac0856d4a3353508faacf8d76a6108dcaacb5aa0f6b1da225f7cebc6da6ec1e: 
-failed sandbox add: failed to create new sandbox: 
-namespace creation reexec command failed: fork/exec /proc/self/exe: cannot allocate memory
-```
-
-On a RPi 2, 37 containers start successfully, then:
-```
+$ ps -ef|grep -c httpd
+69
+$ vmstat
+procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu-----
+ r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st
+ 0  0      0 282096  20624  67696    0    0    
 ```
 
-## run without Docker
+2. Tunning
 
-What if we just run N http processes without docker overhead? The idea here is to estimate the max number of web servers a RPi can host, and compare with results we have running them inside docker, so we better understand the actual docker overhead. 
-We can run 1197 of them. So getting 2334 _inside docker_ won't be easy :-\
+We made various attemps to tweak kernel / docker daemon, but always fail with same 70 container limit.
 
-## tmpfs
+3. Got some tips from https://github.com/dduportal/rpi-utils/tree/hypr-challenge/challenge
 
-## Enable memory overcommit
-`echo 1 > /proc/sysm/vm/overcommit/memory`
-=> 70 containers
+Could just pick-up this solution, but won't learn anything, so restarted from scratch and tried some of the hacks Damien used to get 2334 webservers.
+We were able to get more than 70 containers once we set `LimitNPROC=infinity` on docker daemon systemd config.
 
-## tmpfs
-Idea: create a tmpfs (RAM filesystem) for /var/lib/docker so creating container don't depend on SD card performances
-
-
-## run without docker 
-mostly to get some metrics on the system limits to run a large number of http servers. Disable unused kernel modules
-
-
-
-## Use Go 1.5 for Docker
-Go 1.5 has a better GC which could help reduce Docker daemon memory consumption
-
+So the question : how could we know this looking into `/var/log/daemon.log`? Where to look for `EAGAIN` error (according to http://man7.org/linux/man-pages/man2/setrlimit.2.html)
 
 
