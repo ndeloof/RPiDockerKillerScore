@@ -1,0 +1,13 @@
+[Service]
+ExecStart=
+ExecStart=/usr/bin/docker daemon \
+        --storage-driver=overlay \
+        --debug=false \
+        --userland-proxy=false \
+        --ipv6=false \
+        --log-level=info \
+        --log-driver=none \
+        --ip-forward=false \
+        --ip-masq=false \
+        --iptables=false \
+        --tls=false
