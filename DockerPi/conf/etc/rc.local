@@ -6,7 +6,7 @@ if [ ! -e /root/firstboot_done ]; then
 	fi
 fi
 
-/sbin/modprobe zram
+/sbin/modprobe zram num_devices=2
 
 ZRAM_SWAP_SIZE=200
 /bin/echo $((${ZRAM_SWAP_SIZE}*1024*1024)) > /sys/block/zram0/disksize
