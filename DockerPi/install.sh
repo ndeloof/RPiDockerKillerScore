@@ -2,7 +2,7 @@
 
 HERE=$(dirname "$0")
 
-cp -r "$HERE/conf/." /
+cp -rp "$HERE/conf/." /
 
 # don't launch docker on boot
 systemctl disable docker
