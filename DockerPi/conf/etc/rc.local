@@ -8,15 +8,18 @@ fi
 
 /sbin/modprobe zram num_devices=2
 
-ZRAM_SWAP_SIZE=200
+ZRAM_SWAP_SIZE=1024
 /bin/echo $((${ZRAM_SWAP_SIZE}*1024*1024)) > /sys/block/zram0/disksize
 /sbin/mkswap /dev/zram0
 /sbin/swapon -p 10 /dev/zram0
 
 ZRAM_DOCKER_SIZE=100
 /bin/echo $((${ZRAM_DOCKER_SIZE}*1024*1024)) > /sys/block/zram1/disksize
-/sbin/mkfs.ext4 /dev/zram1
+/sbin/mkfs.btrfs -f /dev/zram1
 mount /var/lib/docker
+
+# no debug by default
+umount /sys/kernel/debug
 
 systemctl start docker
 
