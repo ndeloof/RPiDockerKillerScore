@@ -1,4 +1,20 @@
 #!/bin/bash
+
+sudo rmmod xt_addrtype
+sudo rmmod iptable_filter
+sudo rmmod iptable_nat
+sudo rmmod nf_nat_ipv4
+sudo rmmod nf_nat
+sudo rmmod nf_conntrack_ipv4
+sudo rmmod nf_conntrack
+sudo rmmod nf_defrag_ipv4
+sudo rmmod ip_tables
+sudo rmmod x_tables
+sudo rmmod br_netfilter
+sudo rmmod bridge
+sudo rmmod stp
+sudo rmmod llc
+
 set -e
 
 DOCKER_IMAGE="hypriot/rpi-nano-httpd"

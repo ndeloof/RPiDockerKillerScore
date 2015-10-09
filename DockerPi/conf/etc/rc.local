@@ -1,4 +1,4 @@
-#!/bin/sh -e
+#!/bin/sh
 if [ ! -e /root/firstboot_done ]; then
 	touch /root/firstboot_done
 	if [ -e /root/firstboot.sh ]; then
@@ -13,9 +13,9 @@ ZRAM_SWAP_SIZE=1024
 /sbin/mkswap /dev/zram0
 /sbin/swapon -p 10 /dev/zram0
 
-ZRAM_DOCKER_SIZE=100
+ZRAM_DOCKER_SIZE=120
 /bin/echo $((${ZRAM_DOCKER_SIZE}*1024*1024)) > /sys/block/zram1/disksize
-/sbin/mkfs.btrfs -f /dev/zram1
+/sbin/mkfs.btrfs -f -n 4096 /dev/zram1 
 mount /var/lib/docker
 
 # no debug by default
