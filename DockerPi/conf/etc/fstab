@@ -1,5 +1,6 @@
 proc  /proc proc  defaults  0 0
 /dev/mmcblk0p1  /boot   vfat    defaults        0       0
 /dev/mmcblk0p2  /       ext4    defaults,noatime       0       1
-/dev/zram1  /var/lib/docker   btrfs  noatime,nosuid,noauto,nodatasum,nodatacow,nobarrier,notreelog,ssd   0 0
+#/dev/zram1  /var/lib/docker   btrfs  noatime,nosuid,noauto,nodatasum,ssd   0 0
+/dev/zram1  /var/lib/docker   ext4  noatime,nosuid,noauto   0 0
 
