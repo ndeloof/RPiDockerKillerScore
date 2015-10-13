@@ -1,0 +1,32 @@
+[Service]
+LimitNOFILE=infinity
+LimitNPROC=infinity
+
+; Since Linux 2.6.23, this limit also determines the amount of
+; space used for the process's command-line arguments and
+; environment variables; for details, see execve(2).
+; => lowest value for docker is that:
+LimitSTACK=24576
+LimitSIGPENDING=infinity
+LimitNOFILE=infinity
+LimitAS=infinity
+LimitNPROC=infinity
+
+; 
+; GOGC            Percentage of heap growth at which to trigger GC. Default is
+;                 100. Lower numbers keep peak memory usage down, at the price
+;                 of CPU usage (ie. performance).
+Environment=GODEBUG=gctrace=1 GOMAXPROCS=4 GOGC=1
+ExecStart=
+ExecStart=/usr/bin/docker daemon \
+        --storage-driver=overlay \
+        --debug=false \
+        --userland-proxy=false \
+        --ipv6=false \
+        --log-level=info \
+        --log-driver=none \
+        --bridge=none \
+        --ip-masq=false \
+        --iptables=false \
+        --tls=false \
+	--exec-driver="lxc"
