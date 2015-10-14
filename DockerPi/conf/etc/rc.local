@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 if [ ! -e /root/firstboot_done ]; then
 	touch /root/firstboot_done
 	if [ -e /root/firstboot.sh ]; then
@@ -6,17 +6,34 @@ if [ ! -e /root/firstboot_done ]; then
 	fi
 fi
 
-/sbin/modprobe zram num_devices=2
+/sbin/modprobe zram num_devices=5
 
-ZRAM_SWAP_SIZE=1024
+# 1 zram device per CPU
+ZRAM_SWAP_SIZE=128
 /bin/echo $((${ZRAM_SWAP_SIZE}*1024*1024)) > /sys/block/zram0/disksize
 /sbin/mkswap /dev/zram0
 /sbin/swapon -p 10 /dev/zram0
+/bin/echo $((${ZRAM_SWAP_SIZE}*1024*1024)) > /sys/block/zram1/disksize
+/sbin/mkswap /dev/zram1
+/sbin/swapon -p 10 /dev/zram1
+/bin/echo $((${ZRAM_SWAP_SIZE}*1024*1024)) > /sys/block/zram2/disksize
+/sbin/mkswap /dev/zram2
+/sbin/swapon -p 10 /dev/zram2
+/bin/echo $((${ZRAM_SWAP_SIZE}*1024*1024)) > /sys/block/zram3/disksize
+/sbin/mkswap /dev/zram3
+/sbin/swapon -p 10 /dev/zram3
+
+# and a real swap of 2Gb
+if [[ ! -f /swapfile ]]; then
+  dd if=/dev/zero of=/swapfile bs=1M count=2000
+  chmod 600 /swapfile
+fi
+/sbin/mkswap -f /swapfile
+/sbin/swapon -p 1 /swapfile
 
 ZRAM_DOCKER_SIZE=400
-/bin/echo $((${ZRAM_DOCKER_SIZE}*1024*1024)) > /sys/block/zram1/disksize
-#/sbin/mkfs.btrfs -f -n 4096 /dev/zram1 
-/sbin/mkfs.ext4 -O ^has_journal -N 200000 -I 128 /dev/zram1 
+/bin/echo $((${ZRAM_DOCKER_SIZE}*1024*1024)) > /sys/block/zram4/disksize
+/sbin/mkfs.ext4 -O ^has_journal -N 200000 -I 128 /dev/zram4
 mount /var/lib/docker
 
 # no debug by default
